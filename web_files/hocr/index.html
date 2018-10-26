@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Modifica HOCR - Documenti Aperti</title>
+    <link rel="stylesheet" href="fonts.css"/>
+    <link rel="stylesheet" href="main.css"/>
+    <link rel="stylesheet" href="hocr-proofreader.css"/>
+    <link rel="icon" href="https://documentiaperti.org/img/logo.png">
+    <script src="hocr-proofreader.js"></script>
+    <script src="main.js"></script>    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+
+</head>
+<body>
+<div class="viewport">
+    <div class="toolbar" width="100%">
+
+        <div>
+
+        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="toggle-layout-image">
+            <i class="material-icons">
+            flip_to_front
+            </i>
+        </button>
+        <div class="mdl-tooltip" for="toggle-layout-image">
+            Cambia visualizzazione tra<br>foto originale e testo rilevato
+        </div>
+
+        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon to-hide" id="zoom-page-full">    <i class="material-icons">
+            tab_unselected
+            </i>
+        </button>
+        <div class="mdl-tooltip" for="zoom-page-full">
+           Visualizza l'intera pagina
+        </div>
+
+        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon to-hide" id="zoom-page-width">
+            <i class="material-icons">
+            settings_overscan
+            </i>
+        </button>
+        <div class="mdl-tooltip" for="zoom-page-width">
+           Adatta la pagina allo schermo
+        </div>
+
+        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon to-hide" id="zoom-original">
+            <i class="material-icons">
+            tab
+            </i>
+        </button>
+        <div class="mdl-tooltip" for="zoom-original">
+           Visualizza le dimensioni originali
+        </div>
+        </div>
+        
+        <div >
+            <iframe width="0" height="0" border="0"  hidden name="frameRequest" id="frameRequest"></iframe>
+            <input type="file" id="button-upload" hidden="" onchange="fileChanged();">
+            <label for="button-upload" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-button--colored" id="button-import">
+                <i class="material-icons">
+                publish
+                </i>
+            </label>
+            <div class="mdl-tooltip" for="button-import">
+                Importa <strong>HOCR</strong>
+            </div>
+
+            <a href="#" download='hocr.hocr' class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-button--colored" id="button-export" onclick="setDownload(this);">
+                <i class="material-icons">
+                get_app
+                </i>
+            </a>
+            <div class="mdl-tooltip" for="button-export">
+                Esporta <strong>HOCR</strong>
+            </div>
+
+            <form method="post" target="frameRequest" action="https://documentiaperti.org:2020/updateHOCR" id="saveOnRepo" style="display: inline-block;">
+                <input type="text" name="user" id="user" hidden>
+                <input type="text" name="idProject" id="idProject" hidden>
+                <input type="text" name="hocrData" id="hocrData" hidden>
+    	        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-button--colored" id="button-save">
+    	            <i class="material-icons">
+    	            backup
+    	            </i>
+    	        </button>
+    	        <div class="mdl-tooltip" for="button-save">
+    	            Salva su repository
+    	        </div>
+            </form>
+        </div>        
+    </div>
+
+    <div id="layout-container" class="container"></div>
+    <div id="editor-container" class="container"></div>
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+</div>
+</body>
+</html>

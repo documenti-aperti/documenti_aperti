@@ -1,0 +1,96 @@
+{{template "base/head" .}}
+<div class="home">
+	<div class="ui stackable middle very relaxed page grid">
+		<div class="sixteen wide center aligned centered column">
+			<div>
+				<img class="logo" src="{{AppSubUrl}}/img/gitea-lg.png" />
+			</div>
+			<div class="hero">
+				<h1 class="ui icon header title">
+					Documenti Aperti
+				</h1>
+				{{if eq .Lang "it-IT"}}
+					<h2>Una piattaforma per condividere testi</h2>
+				{{else}}
+					<h2>A platform for sharing documents</h2>
+				{{end}}
+			</div>
+		</div>
+	</div>
+	{{if eq .Lang "it-IT"}}
+		<div class="ui stackable middle very relaxed page grid">
+			<div class="eight wide center column">
+				<h1 class="hero ui icon header">
+					<i class="octicon octicon-file-pdf"></i> OCR friendly
+				</h1>
+				<p class="large">
+					Documenti Aperti crea dei file .pdf da cui è possibile copiare il testo contenuto.
+				</p>
+			</div>
+			<div class="eight wide center column">
+				<h1 class="hero ui icon header">
+					<i class="octicon octicon-git-branch"></i> Tecnologia Gitea
+				</h1>
+				<p class="large">
+					Documenti Aperti sfrutta la tecnologia Gitea per offrire la massima condivisione possibile.
+				</p>
+			</div>
+		</div>
+		<div class="ui stackable middle very relaxed page grid">
+			<div class="eight wide center column">
+				<h1 class="hero ui icon header">
+					<i class="octicon octicon-light-bulb"></i> Semplice e intuitivo
+				</h1>
+				<p class="large">
+					Un'interfaccia grafica permette di organizzare i testi e modificarli.
+				</p>
+			</div>
+			<div class="eight wide center column">
+				<h1 class="hero ui icon header">
+					<i class="octicon octicon-code"></i> Open Source
+				</h1>
+				<p class="large">
+					E' tutto su <a target="_blank" href="https://github.com/documenti-aperti/documenti_aperti">GitHub</a> (o forse no)! Aiutaci contribuendo a migliorare questo progetto.
+				</p>
+			</div>
+		</div>
+	{{else}}
+		<div class="ui stackable middle very relaxed page grid">
+			<div class="eight wide center column">
+				<h1 class="hero ui icon header">
+					<i class="octicon octicon-file-pdf"></i> OCR friendly
+				</h1>
+				<p class="large">
+					Documenti Aperti creates .pdf files which text can be copied.
+				</p>
+			</div>
+			<div class="eight wide center column">
+				<h1 class="hero ui icon header">
+					<i class="octicon octicon-git-branch"></i> Gitea Technology
+				</h1>
+				<p class="large">
+					Documenti Aperti works with Gitea for offering the maximum sharing.
+				</p>
+			</div>
+		</div>
+		<div class="ui stackable middle very relaxed page grid">
+			<div class="eight wide center column">
+				<h1 class="hero ui icon header">
+					<i class="octicon octicon-light-bulb"></i> Simple and intuitive
+				</h1>
+				<p class="large">
+					A graphic interface that lets people manage and edit their documents.
+				</p>
+			</div>
+			<div class="eight wide center column">
+				<h1 class="hero ui icon header">
+					<i class="octicon octicon-code"></i> Open Source
+				</h1>
+				<p class="large">
+					It's all on <a target="_blank" href="https://github.com/documenti-aperti/documenti_aperti">GitHub</a> (maybe not)! Help us by contributing to make this project even better.
+				</p>
+			</div>
+		</div>
+	{{end}}
+</div>
+{{template "base/footer" .}}

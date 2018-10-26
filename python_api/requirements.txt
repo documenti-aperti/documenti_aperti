@@ -1,0 +1,7 @@
+gitpython
+flask
+flask-cors
+pymysql
+internetarchive
+bs4
+pypdf2

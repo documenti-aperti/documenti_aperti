@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Modifica Elaborazione - Documenti Aperti</title>	
+    <meta charset="utf-8">
+    <link rel="icon" href="https://documentiaperti.org/img/logo.png">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.29.0/codemirror.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"/>
+	<script src="https://rubaxa.github.io/Sortable/Sortable.js"></script>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="index.css">
+</head>
+<body>
+	<div id="main-container">
+		<div id="topbar" >
+			<div class="file">
+				<div>#</div><div class="text"> Nome File</div><i class="material-icons"onclick="removeAll();" style="cursor: pointer;" title="Elimina tutto" >delete_sweep</i>
+			</div>
+		</div>
+		<div id="file-container">
+		</div>
+		<div id="waste-container">
+			<div style="position: fixed;background-color: #fff59d;width: calc(60% - 66px);height: 40px;padding: 10px;">File da Eliminare</div>
+			<p style="height: 30px;"></p>
+		</div>
+		<div id="bottombar">
+			<p>
+				Le modifiche verranno applicate dopo l'elaborazione del documento
+			</p>
+			<button onclick="submitChanges();">Salva</button>
+		</div>
+	</div>
+	<iframe src=""  id="frameEditor" ></iframe>
+	<iframe src=""  id="frameDir" ></iframe>
+	<script type="text/javascript">
+		var args = {};
+		var actualOrder = [];
+		var customOrder = [];
+		var deleteFiles = [];
+		var entireFiles = [];
+
+	    location.search.substr(1).split("&").forEach(function(arg){
+	    	var temp = arg.split("=");
+			args[decodeURI(temp[0])] = decodeURI(temp[1]);
+	    });
+	    Sortable.create(document.getElementById("file-container"), {animation: 150,dragClass: "sortable",chosenClass: "sortable"});
+
+	    document.getElementById("frameDir").onload = function () {
+		    for (var i = 1; i < document.getElementById("frameDir").contentDocument.getElementById("repo-files-table").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length; i++) {
+		    	entireFiles.push(document.getElementById("frameDir").contentDocument.getElementById("repo-files-table").getElementsByTagName("tbody")[0].getElementsByTagName("tr")[i].getElementsByTagName("td")[0].innerText);
+		    }
+		    this.readyState = "complete";
+	    }
+	    
+	    document.getElementById("frameEditor").onload = function () {
+	    	try {
+	    		var data = JSON.parse(document.getElementById("frameEditor").contentDocument.getElementById("edit_area").innerText);
+		    	if ("actualOrder" in data) actualOrder = data["actualOrder"];
+		    	if ("customOrder" in data) customOrder = data["customOrder"];
+		    	if ("deleteFiles" in data) deleteFiles = data["deleteFiles"];
+		    } catch (TypeError) {
+		    	document.getElementById("frameEditor").onload = function () {
+		    		document.getElementById("frameEditor").contentDocument.getElementById("file-name").required = false;
+		    	}
+		    	document.getElementById("frameEditor").src = "https://documentiaperti.org/"+args["repo_owner"]+"/"+args["repo_name"]+"/_new/master/raw_data/.startFrom";
+		    }
+	    	this.readyState = "complete";
+		}
+
+	    document.getElementById("frameDir").src = "https://documentiaperti.org/"+args["repo_owner"]+"/"+args["repo_name"]+"/src/branch/master/raw_data";
+
+	    document.getElementById("frameEditor").src = "https://documentiaperti.org/"+args["repo_owner"]+"/"+args["repo_name"]+"/_edit/master/raw_data/.startFrom";
+
+	    function addFileByName(name) {
+	    	addByName("file-container",name,addRemovedFile,"delete","<i class='material-icons grabbable'>dehaze</i>");
+	    }
+
+	    function addFile(elem) {
+	    	removeAndAdd("file-container",elem,addRemovedFile,"delete","<i class='material-icons grabbable'>dehaze</i>");
+	    	console.log(elem);
+	    }
+
+	    function addRemovedFileByName(name) {
+	    	addByName("waste-container",name,addFile,"restore_from_trash");
+
+	    }
+
+	    function addRemovedFile(elem) {
+	    	removeAndAdd("waste-container",elem,addFile,"restore_from_trash");
+	    }
+
+	    function removeAndAdd(nameContainer,elem,fun,iconName,addData = "") {
+	    	var name = elem.parentNode.getElementsByTagName("a")[0].innerText;
+	    	elem.parentNode.parentNode.removeChild(elem.parentNode);
+	    	addByName(nameContainer,name,fun,iconName,addData);
+	    }
+
+	    function addByName(nameContainer,name,fun,iconName,addData = "") {
+	    	document.getElementById(nameContainer).innerHTML += "<div class='file' id='"+encodeURI(name)+"'>"+addData+"<a class='text' href='https://documentiaperti.org/"+args["repo_owner"]+"/"+args["repo_name"]+"/raw/branch/master/raw_data/"+name+"' target='_blank'>"+name+"</a><i class='material-icons' style='cursor:pointer;' onclick='"+fun.name+"(this);' title='Elimina' >"+iconName+"</i></div>";
+	    }
+
+		function initialize() {
+			if (document.getElementById("frameEditor").readyState != "complete" || document.getElementById("frameDir").readyState != "complete") {
+				window.setTimeout(initialize, 100);
+				return;
+			}
+			if (customOrder.length == 0 && deleteFiles.length == 0) {
+				for (var i = 0; i < actualOrder.length; i++) {
+					addFileByName(actualOrder[i]);
+				}
+			} else {
+				for (var i = 0; i < customOrder.length; i++) {
+					addFileByName(customOrder[i]);
+				}
+			}
+			for (var i = 0; i < deleteFiles.length; i++) {
+				addRemovedFileByName(deleteFiles[i]);
+			}
+			for (var i = 0; i < entireFiles.length; i++) {
+				if (actualOrder.indexOf(entireFiles[i].substr(1)) == -1 && customOrder.indexOf(entireFiles[i].substr(1)) == -1 && deleteFiles.indexOf(entireFiles[i].substr(1)) == -1) {
+					addFileByName(entireFiles[i].substr(1));
+				}
+			}
+		}
+
+		function removeAll() {
+			while (document.getElementById("file-container").getElementsByClassName("file").length > 0) {
+				var elem = document.getElementById("file-container").getElementsByClassName("file")[0].getElementsByClassName("text")[0];
+				addRemovedFile(elem);
+			}
+		}
+
+		function submitChanges() {
+			var newCustomOrder = [];
+			var newDeletedFiles = [];
+
+			var files = document.getElementById("file-container").getElementsByClassName("file");
+			for (var i = 0; i < files.length; i++) {
+				newCustomOrder.push(files[i].getElementsByTagName("a")[0].innerText);
+			}
+
+			files = document.getElementById("waste-container").getElementsByClassName("file");
+			for (var i = 0; i < files.length; i++) {
+				newDeletedFiles.push(files[i].getElementsByTagName("a")[0].innerText);
+			}
+
+			document.getElementById("frameEditor").onload = function(){
+				document.location.href = "https://documentiaperti.org/"+args["repo_owner"]+"/"+args["repo_name"]
+			};
+			document.getElementById("frameEditor").contentWindow["codeMirrorEditor"].getDoc().setValue(JSON.stringify({"actualOrder":actualOrder,"customOrder":newCustomOrder,"deleteFiles":newDeletedFiles}));
+			document.getElementById("frameEditor").contentDocument.getElementsByTagName("button")[0].click();
+
+			window.onbeforeunload = null;
+		}
+		initialize();
+
+		window.onbeforeunload = function() {
+			return true;
+		};
+	</script>
+</body>
+</html>
